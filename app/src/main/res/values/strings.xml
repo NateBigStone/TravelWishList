@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TravelWishlist</string>
     <string name="enter_place">Enter place name</string>
+    <string name="why_place">Why?</string>
     <string name="add_button">Add</string>
     <string name="delete_place_message">Delete %1$s?</string>
     <string name="delete_dialog_title">Delete Place</string>

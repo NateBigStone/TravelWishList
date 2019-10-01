@@ -27,6 +27,17 @@
         app:layout_constraintStart_toEndOf="@+id/new_place_name"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/why_place"
+        android:inputType="text"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_place_name" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wish_list"
         android:layout_width="match_parent"
@@ -35,6 +46,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_place_name" />
+        app:layout_constraintTop_toBottomOf="@+id/reason" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

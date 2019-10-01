@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
 
     private Button mAddButton;
     private EditText mNewPlaceNameEditText;
+    private EditText mNewReasonEditText;
 
     private List<Place> mPlaces;
 
@@ -35,13 +37,14 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
 
         mPlaces = new ArrayList<>();
 
-        mPlaces.add(new Place("Iowa"));
-        mPlaces.add(new Place("Wisconsin"));
-        mPlaces.add(new Place("Alberta"));
+        mPlaces.add(new Place("Iowa", "To eat the Corn"));
+        mPlaces.add(new Place("Wisconsin", "To eat the Cheese"));
+        mPlaces.add(new Place("Alberta", "To Drink the Maple Syrup"));
 
         mWishListRecyclerView = findViewById(R.id.wish_list);
         mAddButton = findViewById(R.id.add_place_button);
         mNewPlaceNameEditText = findViewById(R.id.new_place_name);
+        mNewReasonEditText = findViewById(R.id.reason);
 
         mWishListRecyclerView.setHasFixedSize(true);
 
@@ -55,12 +58,15 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
             @Override
             public void onClick(View view) {
                 String newPlace = mNewPlaceNameEditText.getText().toString();
-                if (newPlace.isEmpty()) {
+                String newReason = mNewReasonEditText.getText().toString();
+                if (newPlace.isEmpty() || newReason.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please enter a Place AND a Reason", Toast.LENGTH_LONG).show();
                     return;
                 }
-                mPlaces.add(new Place(newPlace));
+                mPlaces.add(new Place(newPlace, newReason));
                 mAdapter.notifyItemInserted(mPlaces.size() -1);
                 mNewPlaceNameEditText.getText().clear();
+                mNewReasonEditText.getText().clear();
             }
         });
     }
