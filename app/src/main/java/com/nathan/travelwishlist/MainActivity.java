@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
     private Button mAddButton;
     private EditText mNewPlaceNameEditText;
 
-    private List<String> mPlaces;
+    private List<Place> mPlaces;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,10 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
         setContentView(R.layout.activity_main);
 
         mPlaces = new ArrayList<>();
+
+        mPlaces.add(new Place("Iowa"));
+        mPlaces.add(new Place("Wisconsin"));
+        mPlaces.add(new Place("Alberta"));
 
         mWishListRecyclerView = findViewById(R.id.wish_list);
         mAddButton = findViewById(R.id.add_place_button);
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
                 if (newPlace.isEmpty()) {
                     return;
                 }
-                mPlaces.add(newPlace);
+                mPlaces.add(new Place(newPlace));
                 mAdapter.notifyItemInserted(mPlaces.size() -1);
                 mNewPlaceNameEditText.getText().clear();
             }
@@ -64,9 +68,9 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
     @Override
     public void onListClick(int position) {
         System.out.println(position);
-        String place = mPlaces.get(position);
+        Place place = mPlaces.get(position);
         System.out.println(place);
-        Uri locationUri = Uri.parse("geo:0,0?q=" + Uri.encode(place));
+        Uri locationUri = Uri.parse("geo:0,0?q=" + Uri.encode(place.getName()));
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, locationUri );
         startActivity(mapIntent);
     }
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
     public void onListLongClick(int position) {
         final int itemPosition = position;
         AlertDialog confirmDeleteDialog = new AlertDialog.Builder(this)
-                .setMessage(getString(R.string.delete_place_message, mPlaces.get(position) ))
+                .setMessage(getString(R.string.delete_place_message, mPlaces.get(position).getName() ))
                 .setTitle(getString(R.string.delete_dialog_title))
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
