@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -14,12 +15,14 @@ import java.util.List;
 public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.WishListViewHolder> {
 
     private List<Place> data;
+    private int length;
 
     private WishListClickListener listener;
 
-    public WishListAdapter(List<Place> data, WishListClickListener listener) {
+    public WishListAdapter(List<Place> data, int length,  WishListClickListener listener) {
         this.listener = listener;
         this.data = data;
+        this.length = length;
     }
 
     static class WishListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -53,7 +56,6 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.WishLi
             listener.onListLongClick(getAdapterPosition());
             return true;
         }
-
     }
 
     @NonNull
@@ -77,7 +79,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.WishLi
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return this.length;
     }
 
 }

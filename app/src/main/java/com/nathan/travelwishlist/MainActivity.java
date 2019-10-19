@@ -1,6 +1,8 @@
 package com.nathan.travelwishlist;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 public class MainActivity extends AppCompatActivity implements WishListClickListener {
 
@@ -29,29 +32,47 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
     private EditText mNewReasonEditText;
 
     private List<Place> mPlaces;
+    private PlaceViewModel mPlacesDatabase;
+    private int mLength;
+
+    private static String TAG = "MAIN_ACTIVITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPlaces = new ArrayList<>();
+        mPlacesDatabase = new PlaceViewModel(getApplication());
+        Place example = new Place("Iowa", "To eat the Corn");
+        mPlacesDatabase.insert(example);
+        Log.d(TAG, "The database is: " + mPlacesDatabase);
+//        mPlaces.add(new Place("Iowa", "To eat the Corn"));
+//        mPlaces.add(new Place("Wisconsin", "To eat the Cheese"));
+//        mPlaces.add(new Place("Alberta", "To Drink the Maple Syrup"));
 
-        mPlaces.add(new Place("Iowa", "To eat the Corn"));
-        mPlaces.add(new Place("Wisconsin", "To eat the Cheese"));
-        mPlaces.add(new Place("Alberta", "To Drink the Maple Syrup"));
+        mPlacesDatabase.getAllRecords().observe(this, new Observer<List<Place>>() {
+
+            @Override
+            public void onChanged(List<Place> places) {
+                mPlaces = places;
+                //mLength = 5;
+                mLength = places.size();
+                Log.d(TAG, "Place records are: " + places);
+                mAdapter.notifyItemInserted(mLength -1);
+            }
+        });
 
         mWishListRecyclerView = findViewById(R.id.wish_list);
         mAddButton = findViewById(R.id.add_place_button);
         mNewPlaceNameEditText = findViewById(R.id.new_place_name);
         mNewReasonEditText = findViewById(R.id.reason);
 
-        mWishListRecyclerView.setHasFixedSize(true);
+        mWishListRecyclerView.setHasFixedSize(false);
 
         mLayoutManager = new LinearLayoutManager(this);
         mWishListRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new WishListAdapter(mPlaces, this);
+        mAdapter = new WishListAdapter(mPlaces, mLength,this);
         mWishListRecyclerView.setAdapter(mAdapter);
 
         mAddButton.setOnClickListener(new View.OnClickListener(){
@@ -63,7 +84,8 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
                     Toast.makeText(MainActivity.this, "Please enter a Place AND a Reason", Toast.LENGTH_LONG).show();
                     return;
                 }
-                mPlaces.add(new Place(newPlace, newReason));
+                Place newEntry = new Place(newPlace, newReason);
+                mPlacesDatabase.insert(newEntry);
                 mAdapter.notifyItemInserted(mPlaces.size() -1);
                 mNewPlaceNameEditText.getText().clear();
                 mNewReasonEditText.getText().clear();
@@ -80,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, locationUri );
         startActivity(mapIntent);
     }
-
+    //TODO: write a remove
     @Override
     public void onListLongClick(int position) {
         final int itemPosition = position;
