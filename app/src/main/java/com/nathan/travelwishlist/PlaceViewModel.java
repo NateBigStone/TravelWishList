@@ -39,6 +39,10 @@ public class PlaceViewModel extends AndroidViewModel {
         repository.insert(record);
     }
 
+    public void delete(Place record) {
+        repository.delete(record);
+    }
+
     public void update(Place record) {
         repository.update(record);
     }

@@ -23,6 +23,8 @@ import java.util.Observable;
 
 public class MainActivity extends AppCompatActivity implements WishListClickListener {
 
+    private static String TAG = "MAIN_ACTIVITY";
+
     private RecyclerView mWishListRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -34,8 +36,6 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
     private List<Place> mPlaces;
     private PlaceViewModel mPlacesDatabase;
     private int mLength;
-
-    private static String TAG = "MAIN_ACTIVITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +55,22 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
             @Override
             public void onChanged(List<Place> places) {
                 mPlaces = places;
-                //mLength = 5;
                 mLength = places.size();
                 Log.d(TAG, "Place records are: " + places);
-                mAdapter.notifyItemInserted(mLength -1);
+                mAdapter = new WishListAdapter(mPlaces, mLength,MainActivity.this);
+                mWishListRecyclerView.setAdapter(mAdapter);
+
             }
         });
+
+        Log.d(TAG, "Places records are: " + mPlaces);
 
         mWishListRecyclerView = findViewById(R.id.wish_list);
         mAddButton = findViewById(R.id.add_place_button);
         mNewPlaceNameEditText = findViewById(R.id.new_place_name);
         mNewReasonEditText = findViewById(R.id.reason);
 
-        mWishListRecyclerView.setHasFixedSize(false);
+        mWishListRecyclerView.setHasFixedSize(true);
 
         mLayoutManager = new LinearLayoutManager(this);
         mWishListRecyclerView.setLayoutManager(mLayoutManager);
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
                 }
                 Place newEntry = new Place(newPlace, newReason);
                 mPlacesDatabase.insert(newEntry);
-                mAdapter.notifyItemInserted(mPlaces.size() -1);
+                //mAdapter.notifyItemInserted(mPlaces.size() -1);
                 mNewPlaceNameEditText.getText().clear();
                 mNewReasonEditText.getText().clear();
             }
@@ -112,8 +115,9 @@ public class MainActivity extends AppCompatActivity implements WishListClickList
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mPlaces.remove(itemPosition);
-                        mAdapter.notifyItemRemoved(itemPosition);
+                        //remove from database
+                        mPlacesDatabase.delete(mPlaces.get(itemPosition));
+                        //mAdapter.notifyItemRemoved(itemPosition);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null)

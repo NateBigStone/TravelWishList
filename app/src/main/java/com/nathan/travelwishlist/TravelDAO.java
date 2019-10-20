@@ -4,6 +4,7 @@ import android.database.Observable;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -19,6 +20,9 @@ public interface TravelDAO {
 
     @Update
     void update(Place... wr);
+
+    @Delete
+    void delete(Place... wr);
 
     @Query("SELECT * FROM Place WHERE name = :name LIMIT 1")
     LiveData<Place> getRecordForName(String name);

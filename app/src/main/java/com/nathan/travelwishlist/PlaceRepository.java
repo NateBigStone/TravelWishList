@@ -36,6 +36,26 @@ public class PlaceRepository {
 
     }
 
+    public void delete(Place record){
+        new DeletePlaceAsync(travelDAO).execute(record);
+    }
+
+    static class DeletePlaceAsync extends AsyncTask<Place, Void, Void> {
+
+        private TravelDAO travelDAO;
+
+        DeletePlaceAsync(TravelDAO travelDAO) {
+            this.travelDAO = travelDAO;
+        }
+
+        @Override
+        protected Void doInBackground(Place... places) {
+            travelDAO.delete(places);
+            return null;
+        }
+
+    }
+
     public void update(Place record) {
 
         new UpdatePlaceAsync(travelDAO).execute(record);
